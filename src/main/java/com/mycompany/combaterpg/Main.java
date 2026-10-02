@@ -33,7 +33,13 @@ public class Main {
             System.out.println("9. Salir");
             System.out.println("===========================================");
             System.out.print("Seleccione una opción: ");
-            opcion = Integer.parseInt(scanner.nextLine());
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                // Si el usuario ingresa letras o caracteres inválidos
+                System.out.println("Error: debe ingresar un número entero");
+                opcion = 0;
+            }
 
             switch (opcion) {
                 case 1:
@@ -45,11 +51,32 @@ public class Main {
                     System.out.print("Ingrese el nombre: ");
                     String nombre = scanner.nextLine();
                     System.out.print("Ingrese la vida máxima: ");
-                    double vidaMax = Double.parseDouble(scanner.nextLine());
+                    double vidaMax;
+                    try {
+                        vidaMax = Double.parseDouble(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        // Validación para evitar errores si no ingresa un número
+                        System.out.println("Error: debe ingresar un número");
+                        vidaMax = 0;
+                    }
                     System.out.print("Ingrese el ataque: ");
-                    double ataque = Double.parseDouble(scanner.nextLine());
+                    double ataque;
+                    try {
+                        ataque = Double.parseDouble(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        // Validación para evitar errores si no ingresa un número
+                        System.out.println("Error: debe ingresar un número");
+                        ataque = 0;
+                    }
                     System.out.print("Ingrese la defensa: ");
-                    double defensa = Double.parseDouble(scanner.nextLine());
+                    double defensa;
+                    try {
+                        defensa = Double.parseDouble(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        // Validación para evitar errores si no ingresa un número
+                        System.out.println("Error: debe ingresar un número");
+                        defensa = 0;
+                    }
                     p2 = new Personaje(nombre, vidaMax, ataque, defensa);
                     System.out.println("Personaje 2 creado con constructor parametrizado");
                     break;
@@ -71,7 +98,14 @@ public class Main {
 
                 case 4:
                     System.out.print("¿A qué personaje desea subir de nivel? (1 o 2): ");
-                    int personajeSubir = Integer.parseInt(scanner.nextLine());
+                    int personajeSubir;
+                    try {
+                        personajeSubir = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        // Validación para evitar errores si no ingresa un número entero
+                        System.out.println("Error: debe ingresar un número entero");
+                        personajeSubir = 0;
+                    }
                     if (personajeSubir == 1 && p1 != null) {
                         p1.subirNivel();
                     } else if (personajeSubir == 2 && p2 != null) {
@@ -83,7 +117,14 @@ public class Main {
 
                 case 5:
                     System.out.print("¿A qué personaje desea curar? (1 o 2): ");
-                    int personajeCurar = Integer.parseInt(scanner.nextLine());
+                    int personajeCurar;
+                    try {
+                        personajeCurar = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        // Validación para evitar errores si no ingresa un número entero
+                        System.out.println("Error: debe ingresar un número entero");
+                        personajeCurar = 0;
+                    }
                     if (personajeCurar == 1 && p1 != null) {
                         p1.curar();
                     } else if (personajeCurar == 2 && p2 != null) {
@@ -95,7 +136,14 @@ public class Main {
 
                 case 6:
                     System.out.print("¿Quién ataca a quién? (1 ataca a 2, o 2 ataca a 1): ");
-                    int ataqueOpcion = Integer.parseInt(scanner.nextLine());
+                    int ataqueOpcion;
+                    try {
+                        ataqueOpcion = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        // Validación para evitar errores si no ingresa un número entero
+                        System.out.println("Error: debe ingresar un número entero");
+                        ataqueOpcion = 0;
+                    }
                     if (ataqueOpcion == 1 && p1 != null && p2 != null) {
                         p1.atacar(p2);
                         if (!p2.estaVivo()) {

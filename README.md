@@ -57,6 +57,24 @@ Aquí se muestra el programa en funcionamiento con el menú principal y una bata
 - El sistema usa Scanner para la entrada de datos por consola.
 - Los atributos estáticos llevan la cuenta de cuántos personajes se han creado en total.
 
+## Validaciones de Entrada
+
+Aunque no lo menciona el proyecto original, decidí agregar validaciones para manejar errores cuando el usuario ingresa datos incorrectos (letras en lugar de números).
+
+```java
+try {
+    opcion = Integer.parseInt(scanner.nextLine());
+} catch (NumberFormatException e) {
+    System.out.println("Error: debe ingresar un número entero");
+    opcion = 0;
+}
+```
+
+Las validaciones se aplican a:
+- Opción del menú principal (debe ser entero del 1 al 9)
+- Selección de personaje (opciones 4, 5, 6 - debe ser 1 o 2)
+- Datos numéricos al crear Personaje 2 (vida, ataque, defensa - aceptan decimales)
+
 ## Autor
 
 Henry Morales

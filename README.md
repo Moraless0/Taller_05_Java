@@ -43,6 +43,14 @@ java -cp target/classes com.mycompany.combaterpg.Main
 8. Ver el total de personajes creados en el sistema
 9. Salir del programa
 
+## Ejemplo de Ejecución
+
+Aquí se muestra el programa en funcionamiento con el menú principal y una batalla en curso:
+
+![Programa Funcionando](img/test1.png)
+
+![Programa Funcionando](img/test2.png)
+
 ## Notas
 
 - No se utilizan arreglos, listas, herencia ni polimorfismo según las restricciones del taller.

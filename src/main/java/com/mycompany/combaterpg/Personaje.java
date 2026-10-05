@@ -4,22 +4,20 @@
  */
 package com.mycompany.combaterpg;
 
-/**
- *
- * @author abdielmorales
- */
-public class Personaje {
-    // Atributos
-    String nombre;
-    double puntosVida;
-    double puntosVidaMax;
-    double puntosAtaque;
-    double puntosDefensa;
-    int nivel;
-    static int totalPersonajesCreados;
-    
-    // Constructores
+public abstract class Personaje implements Mejorable {
 
+    // Atributos protected para que las clases hijas puedan acceder
+    protected String nombre;
+    protected double puntosVida;
+    protected double puntosVidaMax;
+    protected double puntosAtaque;
+    protected double puntosDefensa;
+    protected int nivel;
+
+    // Contador estático de personajes creados
+    private static int totalPersonajesCreados;
+
+    // Constructor parametrizado - uso de super(...) en clases hijas
     public Personaje(String nombre, double puntosVidaMax, double puntosAtaque, double puntosDefensa) {
         this.nombre = nombre;
         this.puntosVida = puntosVidaMax;
@@ -29,71 +27,53 @@ public class Personaje {
         this.nivel = 1;
         totalPersonajesCreados++;
     }
-    
-    public Personaje(){
-        nombre = "Guerrero Novato";
-        puntosVida = 100;
-        puntosVidaMax = 100;
-        puntosAtaque = 15;
-        puntosDefensa = 5.0;
-        nivel = 1;
-        totalPersonajesCreados++;
-    }
-    
+
+    // Método concreto para recibir daño
     public void recibirDano(double cantidad) {
         this.puntosVida -= cantidad;
-        
+
         if (puntosVida < 0) {
             puntosVida = 0.0;
         }
     }
-    
-    public boolean estaVivo (){
+
+    // Método concreto para verificar si está vivo
+    public boolean estaVivo() {
         if (puntosVida > 0.0) {
             return true;
-            
-        }else
+        } else {
             return false;
-    }
-    
-    public void curar() {
-        puntosVida += 25.0;
-        
-        if (puntosVida > puntosVidaMax) {
-            puntosVida = puntosVidaMax;
         }
-        
-        System.out.println("El personaje se ha curado. Vida actual: " + puntosVida);
     }
-    
-    public void atacar(Personaje objetivo){
-        double danoAgravado;
-        
-        danoAgravado = this.puntosAtaque - objetivo.puntosDefensa;
-        
-        if (danoAgravado <= 0) {
-            danoAgravado = 3.0;
-        }
-        
-        objetivo.recibirDano(danoAgravado);
-        
-        System.out.println(this.nombre + " ha atacado a " + objetivo.nombre + " causando " + danoAgravado + " de daño.");
-    }
-    
-    public void subirNivel (){
 
+    // Método protected para calcular daño base (usado por las clases hijas)
+    protected double calcularDanoBase(Personaje objetivo) {
+        double dano = this.puntosAtaque - objetivo.puntosDefensa;
+
+        if (dano <= 0) {
+            dano = 3.0;
+        }
+
+        return dano;
+    }
+
+    // Método concreto para subir de nivel (implementa la interface)
+    @Override
+    public void subirNivel() {
         this.nivel++;
-        this.puntosVidaMax += 20;
+        this.puntosVidaMax += 20.0;
         this.puntosAtaque += 5.0;
         this.puntosDefensa += 2.0;
 
         this.puntosVida = puntosVidaMax;
 
-        System.out.println("El personaje ha subido a nivel " + nivel + " , puntos de vida han subido a " + puntosVidaMax + " los puntos de ataque han subido a " + puntosAtaque + " y puntos de defensa a " + puntosDefensa);
-
+        // Llama al método default de la interface Mejorable
+        mostrarMensajeNivel(nivel);
     }
 
+    // Método concreto para mostrar estado del personaje
     public void mostrarEstado() {
+        System.out.println("Tipo: " + getTipo());
         System.out.println("Nombre: " + nombre);
         System.out.println("Nivel: " + nivel);
         System.out.println("Vida: " + puntosVida + " / " + puntosVidaMax);
@@ -101,7 +81,15 @@ public class Personaje {
         System.out.println("Defensa: " + puntosDefensa);
     }
 
+    // Método estático para obtener el total de personajes creados
     public static int getTotalPersonajesCreados() {
         return totalPersonajesCreados;
     }
+
+    // Métodos abstractos - cada clase hija debe implementarlos a su manera (polimorfismo)
+    public abstract void atacar(Personaje objetivo);
+
+    public abstract void habilidadEspecial(Personaje objetivo);
+
+    public abstract String getTipo();
 }

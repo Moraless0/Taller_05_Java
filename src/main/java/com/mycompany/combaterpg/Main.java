@@ -6,10 +6,6 @@ package com.mycompany.combaterpg;
 
 import java.util.Scanner;
 
-/**
- *
- * @author abdielmorales
- */
 public class Main {
 
     public static void main(String[] args) {
@@ -22,63 +18,33 @@ public class Main {
             System.out.println("===========================================");
             System.out.println("SIMULADOR DE COMBATE RPG");
             System.out.println("===========================================");
-            System.out.println("1. Crear Personaje 1 (Constructor Predeterminado)");
-            System.out.println("2. Crear Personaje 2 (Constructor Parametrizado)");
+            System.out.println("1. Crear Personaje 1");
+            System.out.println("2. Crear Personaje 2");
             System.out.println("3. Ver ficha técnica de los personajes");
             System.out.println("4. Subir de nivel a un personaje");
             System.out.println("5. Curar a un personaje");
-            System.out.println("6. Realizar un ataque individual");
-            System.out.println("7. Iniciar Batalla Automática (P1 vs P2)");
-            System.out.println("8. Ver total de personajes creados en el sistema");
-            System.out.println("9. Salir");
+            System.out.println("6. Realizar un ataque básico");
+            System.out.println("7. Usar habilidad especial");
+            System.out.println("8. Iniciar Batalla Automática (P1 vs P2)");
+            System.out.println("9. Ver total de personajes creados");
+            System.out.println("10. Salir");
             System.out.println("===========================================");
             System.out.print("Seleccione una opción: ");
             try {
                 opcion = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                // Si el usuario ingresa letras o caracteres inválidos
+                // Validación para evitar errores si no ingresa un número entero
                 System.out.println("Error: debe ingresar un número entero");
                 opcion = 0;
             }
 
             switch (opcion) {
                 case 1:
-                    p1 = new Personaje();
-                    System.out.println("Personaje 1 creado con constructor predeterminado");
+                    p1 = crearPersonaje(scanner, 1);
                     break;
 
                 case 2:
-                    System.out.print("Ingrese el nombre: ");
-                    String nombre = scanner.nextLine();
-                    System.out.print("Ingrese la vida máxima: ");
-                    double vidaMax;
-                    try {
-                        vidaMax = Double.parseDouble(scanner.nextLine());
-                    } catch (NumberFormatException e) {
-                        // Validación para evitar errores si no ingresa un número
-                        System.out.println("Error: debe ingresar un número");
-                        vidaMax = 0;
-                    }
-                    System.out.print("Ingrese el ataque: ");
-                    double ataque;
-                    try {
-                        ataque = Double.parseDouble(scanner.nextLine());
-                    } catch (NumberFormatException e) {
-                        // Validación para evitar errores si no ingresa un número
-                        System.out.println("Error: debe ingresar un número");
-                        ataque = 0;
-                    }
-                    System.out.print("Ingrese la defensa: ");
-                    double defensa;
-                    try {
-                        defensa = Double.parseDouble(scanner.nextLine());
-                    } catch (NumberFormatException e) {
-                        // Validación para evitar errores si no ingresa un número
-                        System.out.println("Error: debe ingresar un número");
-                        defensa = 0;
-                    }
-                    p2 = new Personaje(nombre, vidaMax, ataque, defensa);
-                    System.out.println("Personaje 2 creado con constructor parametrizado");
+                    p2 = crearPersonaje(scanner, 2);
                     break;
 
                 case 3:
@@ -126,9 +92,9 @@ public class Main {
                         personajeCurar = 0;
                     }
                     if (personajeCurar == 1 && p1 != null) {
-                        p1.curar();
+                        Batalla.intentarCurar(p1);
                     } else if (personajeCurar == 2 && p2 != null) {
-                        p2.curar();
+                        Batalla.intentarCurar(p2);
                     } else {
                         System.out.println("Opción no válida o personaje no creado");
                     }
@@ -145,14 +111,22 @@ public class Main {
                         ataqueOpcion = 0;
                     }
                     if (ataqueOpcion == 1 && p1 != null && p2 != null) {
-                        p1.atacar(p2);
-                        if (!p2.estaVivo()) {
-                            System.out.println(p2.nombre + " ha sido derrotado");
+                        if (!p1.estaVivo()) {
+                            System.out.println(p1.nombre + " está derrotado y no puede atacar");
+                        } else {
+                            p1.atacar(p2);
+                            if (!p2.estaVivo()) {
+                                System.out.println(p2.nombre + " ha sido derrotado");
+                            }
                         }
                     } else if (ataqueOpcion == 2 && p1 != null && p2 != null) {
-                        p2.atacar(p1);
-                        if (!p1.estaVivo()) {
-                            System.out.println(p1.nombre + " ha sido derrotado");
+                        if (!p2.estaVivo()) {
+                            System.out.println(p2.nombre + " está derrotado y no puede atacar");
+                        } else {
+                            p2.atacar(p1);
+                            if (!p1.estaVivo()) {
+                                System.out.println(p1.nombre + " ha sido derrotado");
+                            }
                         }
                     } else {
                         System.out.println("Opción no válida o personajes no creados");
@@ -160,6 +134,39 @@ public class Main {
                     break;
 
                 case 7:
+                    System.out.print("¿Quién usa habilidad especial contra quién? (1 contra 2, o 2 contra 1): ");
+                    int habilidadOpcion;
+                    try {
+                        habilidadOpcion = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        // Validación para evitar errores si no ingresa un número entero
+                        System.out.println("Error: debe ingresar un número entero");
+                        habilidadOpcion = 0;
+                    }
+                    if (habilidadOpcion == 1 && p1 != null && p2 != null) {
+                        if (!p1.estaVivo()) {
+                            System.out.println(p1.nombre + " está derrotado y no puede usar habilidades");
+                        } else {
+                            p1.habilidadEspecial(p2);
+                            if (!p2.estaVivo()) {
+                                System.out.println(p2.nombre + " ha sido derrotado");
+                            }
+                        }
+                    } else if (habilidadOpcion == 2 && p1 != null && p2 != null) {
+                        if (!p2.estaVivo()) {
+                            System.out.println(p2.nombre + " está derrotado y no puede usar habilidades");
+                        } else {
+                            p2.habilidadEspecial(p1);
+                            if (!p1.estaVivo()) {
+                                System.out.println(p1.nombre + " ha sido derrotado");
+                            }
+                        }
+                    } else {
+                        System.out.println("Opción no válida o personajes no creados");
+                    }
+                    break;
+
+                case 8:
                     if (p1 != null && p2 != null && p1.estaVivo() && p2.estaVivo()) {
                         Batalla.iniciarPeleaAutomatica(p1, p2);
                     } else {
@@ -167,11 +174,11 @@ public class Main {
                     }
                     break;
 
-                case 8:
+                case 9:
                     System.out.println("Total de personajes creados: " + Personaje.getTotalPersonajesCreados());
                     break;
 
-                case 9:
+                case 10:
                     System.out.println("Gracias por usar el simulador de combate RPG. ¡Hasta pronto!");
                     break;
 
@@ -179,8 +186,115 @@ public class Main {
                     System.out.println("Opción no válida");
             }
             System.out.println();
-        } while (opcion != 9);
+        } while (opcion != 10);
 
         scanner.close();
+    }
+
+    // Método auxiliar para crear un personaje - usa polimorfismo por referencia
+    private static Personaje crearPersonaje(Scanner scanner, int numeroPersonaje) {
+        System.out.println("Seleccione el tipo de personaje:");
+        System.out.println("1. Guerrero");
+        System.out.println("2. Mago");
+        System.out.println("3. Arquero");
+        System.out.print("Opción: ");
+        int tipo;
+        try {
+            tipo = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Error: debe ingresar un número entero");
+            return null;
+        }
+
+        System.out.print("¿Usar constructor predeterminado? (s/n): ");
+        String constructorTipo = scanner.nextLine();
+
+        if (constructorTipo.equalsIgnoreCase("s")) {
+            // Constructor predeterminado
+            switch (tipo) {
+                case 1:
+                    System.out.println("Personaje " + numeroPersonaje + " creado: Guerrero");
+                    return new Guerrero();
+                case 2:
+                    System.out.println("Personaje " + numeroPersonaje + " creado: Mago");
+                    return new Mago();
+                case 3:
+                    System.out.println("Personaje " + numeroPersonaje + " creado: Arquero");
+                    return new Arquero();
+                default:
+                    System.out.println("Tipo no válido");
+                    return null;
+            }
+        } else {
+            // Constructor parametrizado
+            System.out.print("Ingrese el nombre: ");
+            String nombre = scanner.nextLine();
+            System.out.print("Ingrese la vida máxima: ");
+            double vidaMax;
+            try {
+                vidaMax = Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                // Validación para evitar errores si no ingresa un número
+                System.out.println("Error: debe ingresar un número");
+                return null;
+            }
+            System.out.print("Ingrese el ataque: ");
+            double ataque;
+            try {
+                ataque = Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                // Validación para evitar errores si no ingresa un número
+                System.out.println("Error: debe ingresar un número");
+                return null;
+            }
+            System.out.print("Ingrese la defensa: ");
+            double defensa;
+            try {
+                defensa = Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                // Validación para evitar errores si no ingresa un número
+                System.out.println("Error: debe ingresar un número");
+                return null;
+            }
+
+            switch (tipo) {
+                case 1:
+                    System.out.print("Ingrese el escudo: ");
+                    double escudo;
+                    try {
+                        escudo = Double.parseDouble(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error: debe ingresar un número");
+                        return null;
+                    }
+                    System.out.println("Personaje " + numeroPersonaje + " creado: Guerrero");
+                    return new Guerrero(nombre, vidaMax, ataque, defensa, escudo);
+                case 2:
+                    System.out.print("Ingrese el maná: ");
+                    double mana;
+                    try {
+                        mana = Double.parseDouble(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error: debe ingresar un número");
+                        return null;
+                    }
+                    System.out.println("Personaje " + numeroPersonaje + " creado: Mago");
+                    return new Mago(nombre, vidaMax, ataque, defensa, mana);
+                case 3:
+                    System.out.print("Ingrese la precisión (0-100): ");
+                    int precision;
+                    try {
+                        precision = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error: debe ingresar un número entero");
+                        return null;
+                    }
+                    System.out.println("Personaje " + numeroPersonaje + " creado: Arquero");
+                    return new Arquero(nombre, vidaMax, ataque, defensa, precision);
+                default:
+                    System.out.println("Tipo no válido");
+                    return null;
+            }
+        }
     }
 }
